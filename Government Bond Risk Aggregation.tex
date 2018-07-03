@@ -1,0 +1,260 @@
+\documentclass[12pt&a4paper]{article}
+\usepackage{textcomp} 
+\usepackage{multicol} 
+\usepackage{setspace}
+\usepackage[justification=centering]{caption}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath,amsthm}
+\usepackage{amsfonts,enumerate}
+\usepackage[linktoc=all]{hyperref}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{dsfont}
+\usepackage{eurosym}
+
+
+
+\titleformat{\section}[hang]{\Large\center\scshape}{\thesection}{1em}{}
+\titleformat{\subsection}[hang]{\bfseries\normalsize}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[hang]{\itshape\normalsize}{}{1em}{}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={blue!50!black},
+    citecolor={red!50!black},
+    urlcolor={blue!80!black}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{remark}[theorem]{Remark}
+
+\numberwithin{equation}{section}
+
+
+
+\def\bE{\mathbb{E}}
+\def\cF{\mathcal{F}}
+\def\cL{\mathcal{L}}
+\def\PP{\mathbb{P}}
+\def\QQ{\mathbb{Q}}
+\def\RR{\mathbb{R}}
+\def\one{\mathds{1}}
+
+
+
+
+\begin{document}
+
+\pagenumbering{roman}
+
+\begin{titlepage}
+
+\begin{center}
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+\includegraphics[width=0.2\textwidth]{C:/Users/con-4/Documents/Uni/CMF/edlogo}~\\[1cm] %Need edlogo image
+\textsc{\LARGE University of Edinburgh}~\\[6.5cm]
+
+
+
+% Title
+\hrule ~\\[0.4cm]
+{ \huge \bf Government Bond Risk Aggregation }~\\[0.4cm]
+\hrule ~\\[2cm]
+
+
+\begin{abstract}
+	This is the brief abstract for the dissertation
+\end{abstract}
+\vfill
+
+% Bottom of the page
+
+{\large\today \\
+Conor Forgie\\
+s1326353
+
+}
+
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+
+
+\section{Bonds}
+\subsection{The Basic Coupon Bond}
+This thesis is going to be talking a lot about bonds so we had better start with an introduction to the topic. A bond is a form of annuity; fixed sums of money, called coupons, are paid to an investor, normally on a semi-annual basis, over the lifetime of the bond until it reached a fixed maturity time where the last coupon is paid along with what is known as the face, or par, value of the bond.
+\begin{figure}[H]
+	\centering
+	\setlength{\unitlength}{1cm}
+	\thicklines
+	\caption{Bond cashflow}
+	\label{fig:bondcashflow}
+	\begin{picture}(12,2)
+	\put(1,1){\vector(1,0){10}}\put(0.6,1.3){$t=0$}\put(10.8,1.5){$T$}
+	\put(1,1){\circle*{0.1}}\put(3,1){\circle*{0.1}}\put(5,1){\circle*{0.1}}
+	\put(7,1){\circle*{0.1}}\put(9,1){\circle*{0.1}}
+	\put(2.85,0.4){$C$}\put(4.85,0.4){$C$}\put(6.85,0.4){$C$}\put(8.85,0.4){$C$}
+	\put(10.2,0.4){$C+FV$}
+	\end{picture}
+\end{figure}
+For example if an investor bought a 5\% 10 year UK government bond, called a gilt\footnote{So-called because they were originally issued on gilt edged notes}, with face value £100 then they would receive 20 semi-annual payments of £2.5 ((face value $\times$ coupon rate)/2) and the face value of £100 in 10 years time.
+
+A bond with no coupon payments is appropriately named a zero-coupon bond (zcb). The question then is how do you come to a price for these instruments? Well there are two approaches:
+
+\begin{enumerate}
+	\item Apply a discounted cash flow approach to the series of coupon and the face value payments.
+	\item Use a stochastic differential equation to model the short rate and then derive the price of a bond from the model.
+\end{enumerate}
+
+\subsubsection{DCF Approach}
+We begin with the first approach which is discounting the cash flows back to present day. Let $C$ denote the coupon amount, $FV$ denote the face value of the bond and $i$ denote ``risk-free" interest rate. The price of a bond paying annual coupons (for simplicity) with maturity $n$ years is then,
+\begin{align}
+P&= \frac{C}{1+i}+\frac{C}{(1+i)^2}+\cdots + \frac{C}{(1+i)^n} + \frac{FV}{(1+i)^n}\nonumber\\
+&= \sum_{j=1}^{n}\frac{C}{(1+i)^j} + \frac{FV}{(1+i)^n}\nonumber\\
+&= \frac{1}{i}\left(1-\frac{1}{(1+i)^n}\right) C + \frac{FV}{(1+i)^n}\label{bondprice}.
+\end{align}
+However in reality there are a few other elements to consider; a bond is not normally bought on the day of issue therefore if bought in-between coupon payments accrued interest from the next coupon must be taken into account. Moreover the price of a bond is not drawn from a given ``risk-free" rate but is set by the market and the $i$ that makes the price from \eqref{bondprice} equal the market price is then known as the yield of the bond (the more commonly used symbol is $y$). I.e.
+\begin{equation}\label{pricefromyield}
+P(y)=\frac{1}{y}\left(1-\frac{1}{(1+y)^n}\right) C + \frac{FV}{(1+y)^n}
+\end{equation}
+
+
+\subsubsection{Hull-White Model}
+A widely used model for the short rate is the Hull-White model because it is rich enough that one can calibrate it to current market rates.
+\begin{equation}
+dr(t) = (\theta(t)-a r(t)dt +\sigma(t)dW_t
+\end{equation}
+The solution to the SDE is
+\begin{equation}
+r(t)= e^{-at}r(0)+\int_{0}^{t}e^{-a(t-s)}\theta(s) ds + \int_{0}^{t}e^{-(t-s)}\sigma W_s
+\end{equation}
+
+\begin{definition}
+	We say a short rate model has affine term structure if the price of a $T$-ZCB at time $t$ can be expressed as
+	\begin{equation}
+	p(t, T) = \exp (A(t, T) - B(t, T)r(t))
+	\end{equation}
+	for some deterministic functions $A$ and $B$.
+\end{definition}
+
+\begin{theorem}
+	Consider a short rate given by
+	\begin{equation}
+	dr(t)=\mu(t,r(t))dr + \sigma(t,r(t))dW_t
+	\end{equation}
+	If this SDE has a unique strong solution and if
+	\begin{equation}
+	\begin{aligned}
+	\mu(t,r)&=\alpha(t)r+\beta(t),\\
+	\sigma(t,r)&=\sqrt{\gamma(t)r+\delta(t)}
+	\end{aligned}
+	\end{equation}
+	for some continuous functions $\alpha,\beta,\gamma,\delta$ then the model has affine term structure. Moreover $A$ and $B$ satisfy
+	\begin{equation}
+	\begin{aligned}
+	\partial_t B(t,T)&= -\alpha(t)B(t,T)+\frac{1}{2}\gamma(t)B^2(t,T)-1,\\
+	\partial_t A(t,T)&= \beta(t)B(t,T)-\frac{1}{2}\delta(t)B^2(t,T),\\
+	B(T,T)&=0,\qquad A(T,T)=0.
+	\end{aligned}
+	\end{equation}
+\end{theorem}
+
+
+\subsection{Bond Futures}
+A futures contract is an exchange traded forward contract which is a contract between two parties to exchange a commodity or asset at a pre agreed date for a pre agreed price. When it comes to bond futures however the holder of the short (the seller of the future) has a choice of what bond to deliver and sometimes even when to deliver it.\\
+
+Let us explain with two examples; a Euro-Bund Future is a bond future issued by the German government and allows delivery of any bonds issued by Germany, Italy, France, Spain or Switzerland with remaining term of 8.5 to 10.5 years, a coupon of 6\% and issued in Euros. The delivery date is the 10\textsuperscript{th} day of the delivery month (either March, June, September or December).
+
+A U.S. Treasury bond future allows delivery of any U.S. T bond that have remaining term to maturity of at least 15 years and less than 25 years from the first day of the futures delivery month. It also allows delivery on any day of the delivery month (again either March, June, September or December).
+
+These two examples outline the issue of making the ``correct" choice of what bond to deliver into the futures contract. What is ``correct"? Like most things in finance it will be the choice that makes the bank the most profit or least loss the so-called cheapest to deliver.
+
+
+
+\subsubsection{Cheapest To Deliver}
+ 
+
+
+
+\section{Current Risk Measures}
+\subsection{PV01}
+Unit PV01 is defined as $\partial P/\partial y$. We calculate this using equation \eqref{pricefromyield},
+\begin{align*}
+\frac{\partial P}{\partial y} = -\frac{1}{y^2}\left(1-\frac{1}{(1+y)^n}\right) C + \frac{1}{y} \frac{nC}{(1+y)^{n+1}} - \frac{n\, FV}{(1+y)^{n+1}}
+\end{align*}
+per 1mm of notional. 
+
+For instance a German bond (DBR 0.5 15/02/2028) with par value of \euro100, market price \euro100.79, coupon of \euro0.5 and roughly 9 years until maturity has a unit PV01 of \euro-902.48. 
+
+
+Then to examine the risk of a portfolio of bonds we can
+\begin{enumerate}
+	\item Calculate a PV01 for each bond in a portfolio (The unit $\partial P/\partial y$ multiplied by the position in the bond.)
+	\item Do the same for bond futures, by converting bond futures into an equivalent amount of the underlying cheapest to deliver bond.
+\item Aggregate the risk generated by 1) and 2) onto standard tenors (e.g. 3m, 2y, 5y, 10y, 20y, 30y, 50y).
+\begin{enumerate}
+	\item In the most straightforward method we just split the risk by maturity and linearly interpolate.
+\end{enumerate}
+	\item We end up with a simple risk ladder like this, and we can use this to predict pnl, and compare to actual pnl change.
+\end{enumerate}
+
+\subsection{PCA}
+We can use a basket of benchmark bonds to try to describe the outcome of another bond via a regression. 
+
+\subsection{SFM}	
+
+\section{Accuracy of Risk Measures}
+\subsection{PV01}
+We can use the PV01 values generated from the previous days trading to predict the day's pnl given a move of $x$ basis points. This can be done for all days over a period, of say one year, giving a vector of predicted pnl, $\hat{p}$. This can then be compared to the actual daily pnl, $p$, using various metrics. A few examples are:
+\begin{enumerate}
+	\item Standard Euclidean distance - $\cL^2$, 
+	\[
+	\sqrt{\sum_{i=1}^{n}(p_i-\hat{p}_i)^2}
+	\]
+	\item Manhattan distance - $\cL^1$,
+	\[
+	\sum_{i=1}^{n}\lvert p_i - \hat{p}_i\rvert
+	\]
+	\item Minkowski distance - $\cL^p$,
+	\[
+	\left(\sum_{i=1}^{n}(p_i-\hat{p}_i)^p \right)^{\frac{1}{p}}
+	\]
+	\item Cosine distance,
+	\[
+	\frac{p\cdot \hat{p}}{||p||\, ||\hat{p}||}
+	\]
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
+
